@@ -1,0 +1,113 @@
+#! /bin/bash
+
+CWD=$(echo $PWD)
+
+partition()
+{
+        python3 -c "from rich.console import Console; console = Console(); console.rule('[+] $@ [+]');" | lolcat
+}
+
+color_output()
+{
+        $@ 2>&1 | xargs -L1 -d$'\n' echo -e "\e[1m[I]\e[0m" | lolcat;
+}
+
+sudo apt-get clean;
+
+partition "INSTALLING CUSTOM TERMINAL TOOLS"
+color_output sudo apt install -y neofetch tmux bat exa vim 2>&1 | lolcat
+echo ""
+
+partition "INSTALLING ZSH SHELL"
+color_output sudo apt install -y zsh 2>&1 | lolcat
+sudo sed -i "/user/ s/bash/zsh/" /etc/passwd
+echo ""
+
+if [ ! -f $HOME/.local/bin/clearRam ];
+then
+	partition "INSTALLING CLEAR-RAM"
+	cp -f $CWD/custom-terminal/clearRam $HOME/.local/bin/clearRam
+	echo ""
+fi
+
+if [ ! -d $HOME/.fonts ];
+then
+	partition "INSTALLING FIRA CODE NERD FONT"
+	mkdir -p $HOME/.fonts 2> /dev/null
+	cd $HOME/.fonts
+	color_output wget https://github.com/ryanoasis/nerd-fonts/raw/master/patched-fonts/FiraCode/Bold/complete/Fira%20Code%20Bold%20Nerd%20Font%20Complete.ttf
+	color_output fc-cache -f -v $PWD
+	echo ""
+fi
+
+if [ ! -f "$HOME/.zsh_profile" ];
+then
+	partition "INSTALLING ZSH PROFILE"
+	cp -f $CWD/custom-terminal/zsh_profile $HOME/.zsh_profile
+	echo ""
+
+	color_output echo -e "INSTALLING OH-MY-ZSH"
+	sh -c "$(wget -q -O- https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" 2>&1 | lolcat
+	echo -e "source $HOME/.zsh_profile" >> $HOME/.zshrc
+	echo ""
+
+	color_output echo -e "UPDATING ZSH-THEMES"
+	sed -i 's/ZSH_THEME="robbyrussell".*/ZSH_THEME="random"/g' $HOME/.zshrc
+	themes='ZSH_THEME_RANDOM_CANDIDATES=( "xiong-chiamiov" "mortalscumbag" "dst" "trapd00r" "funky" "clean" "fino-time" "bureau" "dpoggi" "mikeh" "geoffgarside" "crcandy" "simonoff" "rkj-repos" "agnoster" "darkblood" "frisk" "nicoulaj" "duellj" "rkj" )'
+	sed -i "s/# ZSH_THEME_RANDOM_CANDIDATES=.*/$themes/g" $HOME/.zshrc
+	color_output echo -e "[INFO]: ZSH THEMES UPDATED"
+	echo ""
+
+	color_output echo -e "INSTALLING ZSH-AUTOSUGGESTIONS"
+	cmd="git clone --progress https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions"
+	$CWD/bin/gitme "$cmd"
+	echo ""
+
+	color_output echo -e "INSTALLING ZSH-SYNTAX-HIGHLIGHTNING"
+	cmd="git clone --progress https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting"
+	$CWD/bin/gitme "$cmd"
+	plugins='plugins=(git zsh-autosuggestions zsh-syntax-highlighting)'
+	sed -i "s/plugins=(git)/$plugins/g" $HOME/.zshrc
+	echo ""
+
+fi
+
+if [ ! -f "$HOME/.tmux/tmux.conf" ];
+then
+	partition "INSTALLING TMUX CONFIG"
+	mkdir -p $HOME/.tmux
+	cp -f $CWD/custom-terminal/tmux.conf $HOME/.tmux/tmux.conf
+	echo ""
+
+	color_output echo -e "TMUX: INSTALLING NORD-THEME"
+	cmd="git clone --progress https://github.com/arcticicestudio/nord-tmux.git $HOME/.tmux/nord-tmux"
+	$CWD/bin/gitme "$cmd"
+	echo ""
+
+	color_output echo -e "TMUX: INSTALLING TMUX-POWER-THEME"
+	cmd="git clone --progress https://github.com/wfxr/tmux-power.git $HOME/.tmux/tmux-power"
+	$CWD/bin/gitme "$cmd"
+	echo ""
+
+	color_output echo -e "TMUX: INSTALLING TMUX-NET-SPEED"
+	cmd="git clone --progress https://github.com/tmux-plugins/tmux-net-speed.git $HOME/.tmux/tmux-net-speed"
+	$CWD/bin/gitme "$cmd"
+	echo ""
+fi
+
+if [ ! -f "$HOME/.vimrc" ];
+then
+	partition "INSTALLING VIM THEMES"
+	cp -f $CWD/custom-terminal/vimrc $HOME/.vimrc
+	color_output echo -e "[INFO]: VIMRC INSTALLED"
+	color_output echo -e "[INFO]: INSTALL NERD FONT FOR HOST : 'https://github.com/ryanoasis/nerd-fonts' OF YOUR CHOICE"
+	color_output echo -e "[INFO]: THIS WILL ENHANCE VISUALS"
+	echo ""
+
+	python3 -c 'from rich.console import Console; console = Console(); console.rule("[INFO] LOGOFF AND LOGIN AND TYPE vim TO INSTALL VIM PLUGINS [INFO]");' | lolcat
+	echo -ne "\e[1m>>> HIT ENTER TO CONTINUE <<<\e[0m" | lolcat; read
+	echo ""
+fi
+
+partition "FINISHED"
+echo ""

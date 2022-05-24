@@ -1,0 +1,24 @@
+#! /bin/bash
+
+partition()
+{
+        python3 -c "from rich.console import Console; console = Console(); console.rule('[+] $@ [+]');" | lolcat
+}
+
+color_output()
+{
+        $@ 2>&1 | xargs -L1 -d$'\n' echo -e "\e[1m[I]\e[0m" | lolcat;
+}
+
+partition "INSTALLING SCRCPY"
+color_output sudo apt-get install -y snapd
+git clone --quiet https://github.com/DamionGans/ubuntu-wsl2-systemd-script.git
+cd ubuntu-wsl2-systemd-script/
+sed -i '/nsenter/ s/-a/-m -p/g' enter-systemd-namespace
+color_output bash ubuntu-wsl2-systemd-script.sh --force
+echo "[+] Shutdown WSL and restart"
+echo "[+] Copy-Paste to install scrcpy: 'sudo systemctl enable dbus && sudo systemctl restart dbus && sudo systemctl restart snapd.service && snap version && sleep 5 && sudo snap install scrcpy 2>&1 | lolcat'"
+cd ..
+rm -rf ubuntu-wsl2-systemd-script/
+echo ""
+exit

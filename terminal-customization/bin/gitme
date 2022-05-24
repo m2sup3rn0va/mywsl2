@@ -1,0 +1,28 @@
+#! /usr/bin/python3
+
+from time import sleep
+from subprocess import PIPE, STDOUT, Popen
+from rich.console import Console
+import threading
+import sys
+
+
+def generate_output(res, console):
+    while(True):
+        out_data = res.stdout.readline().rstrip()
+
+        if out_data:
+            console.print(f"[bold sea_green2][I] {out_data}")
+        else:
+            break
+
+
+console = Console()
+cmd = sys.argv[1]
+
+res = Popen(cmd, stdout=PIPE, stderr=STDOUT, shell=True, text=True, universal_newlines=True)
+
+t_generate_output = threading.Thread(target=generate_output, args=(res, console))
+
+t_generate_output.start()
+t_generate_output.join()

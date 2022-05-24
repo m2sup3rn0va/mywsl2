@@ -1,0 +1,120 @@
+#! /bin/bash
+
+partition()
+{
+        python3 -c "from rich.console import Console; console = Console(); console.rule('[+] $@ [+]');" | lolcat
+}
+
+color_output()
+{
+        $@ 2>&1 | xargs -L1 -d$'\n' echo -e "\e[1m[I]\e[0m" | lolcat;
+}
+
+sudo apt-get clean;
+tput clear reset
+
+# Updating the System
+sudo apt-get clean
+sudo apt-get autoclean
+sudo apt-get remove
+sudo apt-get autoremove
+sudo apt-get update
+sudo apt-get upgrade -y
+sudo apt-get dist-upgrade -y
+sudo apt-get install build-essential -y
+
+# Install Pre-requisites
+sudo apt-get install -y lolcat
+sudo apt-get install -y python3 python3-pip python3-venv golang font-manager
+python3 -m pip install -U pip rich bs4 --user --no-warn-script-location
+tput clear reset
+
+partition "INSTALLING NET-TOOLS"
+color_output sudo apt-get install -y net-tools
+echo ""
+
+partition "INSTALLING PING"
+color_output sudo apt-get install -y iputils-ping 
+echo ""
+
+partition "INSTALLING WGET, CURL"
+color_output sudo apt-get install -y wget curl 
+echo ""
+
+partition "INSTALLING NEOFETCH"
+color_output sudo apt-get install -y neofetch 
+echo ""
+
+partition "INSTALLING GIT"
+color_output sudo apt-get install -y git 
+echo ""
+
+partition "INSTALLING GDEBI"
+color_output sudo apt-get install -y gdebi 
+echo ""
+
+partition "INSTALLING AAPT, ZIPALIGN, UNZIP, WKHTMLTOPDF"
+color_output sudo apt-get install -y aapt zipalign unzip wkhtmltopdf
+echo ""
+
+partition "INSTALLING EXA - RUST PROGRAM"
+color_output sudo apt-get install -y exa
+echo ""
+
+# Installing NVM
+
+if [ -d "$HOME/.nvm" ];
+then
+	export NVM_DIR=$HOME/.nvm
+	source $NVM_DIR/nvm.sh
+
+	partition "INSTALLING NODE AND NPM"
+	color_output echo -e "INFO : FOUND NVM"
+	partition "INSTALLING NPM - 12.20.0"
+	color_output nvm install --no-progress 12.20.0
+	python3 -c "from rich.console import Console; console = Console(); console.rule();" | lolcat
+
+	color_output nvm use 12.20.0
+	echo ""
+
+else
+	partition "INSTALLING NVM"
+	curl -s -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.34.0/install.sh | bash 2> /dev/null | xargs -L1 echo -e "[I]" | lolcat
+	python3 -c "from rich.console import Console; console = Console(); console.rule();" | lolcat
+	
+	color_output echo -e "STATUS: NVM INSTALLED"
+	color_output echo -e "INFO: PLEASE RESTART THE TERMINAL AND RUN THE SCRIPT AGAIN TO INSTALL NODE AND NPM"
+	partition "FINISHED"
+	echo ""
+	exit
+fi
+
+if [ ! -d $HOME/.local/tools ];
+then
+	partition "CREATING TOOLS FOLDER"
+	echo ""
+	mkdir -p $HOME/.local/tools 2> /dev/null
+	color_output echo "[+] Created Tools Folder [+]"
+	echo ""
+fi
+
+if [ ! -d $HOME/.local/bin ];
+then
+	partition "CREATING TOOLS FOLDER"
+	echo ""
+	mkdir -p $HOME/.local/bin 2> /dev/null
+	color_output echo "[+] Created Bin Folder [+]"
+	echo ""
+fi
+
+./apt-update/install
+echo ""
+echo ""
+./custom-terminal/install
+echo ""
+echo ""
+./scrcpy/install
+echo ""
+
+partition "FINISHED"
+echo ""

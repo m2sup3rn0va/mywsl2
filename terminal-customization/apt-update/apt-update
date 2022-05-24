@@ -1,0 +1,50 @@
+#! /bin/bash
+
+partition()
+{
+	python3 -c "from rich.console import Console; console = Console(); console.rule('[bold][+] $@ [+]');" | lolcat
+}
+
+color_output()
+{
+	$@ 2>&1 | xargs -L1 -d$'\n' echo -e "\e[1m[I]\e[0m" | lolcat;
+}
+
+sudo apt-get clean;
+tput clear reset
+
+partition "INITIATING APT UPDATE"
+color_output sudo apt-get clean -y;
+echo ""
+
+partition "apt-get autoclean"
+color_output sudo apt-get autoclean -y;
+echo ""
+
+partition "apt-get remove"
+color_output sudo apt-get remove -y;
+echo ""
+
+partition "apt-get autoremove"
+color_output sudo apt-get autoremove -y;
+echo ""
+
+partition "apt-get update"
+color_output sudo apt-get update --fix-missing;
+echo ""
+
+partition "apt-get upgrade"
+color_output sudo apt-get upgrade -y;
+echo ""
+
+partition "apt-get dist-upgrade"
+color_output sudo apt-get dist-upgrade -y;
+echo ""
+
+partition "apt-get install build-essential"
+color_output sudo apt-get install build-essential -y
+echo ""
+
+partition "FINISHED"
+echo ""
+

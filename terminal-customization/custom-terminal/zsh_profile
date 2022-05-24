@@ -1,0 +1,65 @@
+# ======================================================================================================
+# Startup Commands
+# ======================================================================================================
+
+neofetch
+export PATH="$HOME/android-studio/jre/bin/:$HOME/.local/bin/:$PATH"
+
+# ======================================================================================================
+# Aliases
+# ======================================================================================================
+
+alias tmux="tmux -f $HOME/.tmux/tmux.conf new \"tmux display 'MOUSE MODE: ON' && exec $SHELL\""
+alias ls='exa -l --icons $@'
+alias ll='exa -al --icons $@'
+alias tree='exa -Tal --icons $@'
+alias cls='tput clear reset'
+alias cat='batcat $@'
+alias startx='kex --win -s'
+alias swd='cc="$PWD"'
+alias gwd='cd $cc'
+alias avd6='start-avd --avd "AVDv6"'
+alias avd7='start-avd --avd "AVDv7"'
+alias avd9='start-avd --avd "AVDv9"'
+alias py='python3'
+alias pp3='python3 -m pip install'
+alias pp2='python2 -m pip install'
+
+# ======================================================================================================
+# NVM
+# ======================================================================================================
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+# ======================================================================================================
+# Functions
+# ======================================================================================================
+
+function fp()
+{
+    ps -aux | grep -v grep | grep $1 | lolcat
+}
+
+function fpid()
+{
+    ps -aux | grep -v grep | grep $1 | awk -F' ' '{ print $2 }'
+}
+
+function dp()
+{
+    deploy-proxy --emulator $(adb devices -l | awk -F' ' '{ print $1 }' | tail -n 2) --http_proxy $@
+}
+
+function sp()
+{
+    deploy-proxy --emulator $(adb devices -l | awk -F' ' '{ print $1 }' | tail -n 2) --show
+}
+
+function rp()
+{
+    deploy-proxy --emulator $(adb devices -l | awk -F' ' '{ print $1 }' | tail -n 2) --http_proxy :0
+}
+
+# ======================================================================================================

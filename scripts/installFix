@@ -1,0 +1,113 @@
+#! /bin/bash
+
+if [ "$EUID" -ne 0 ]
+then
+  echo "[+] Need to run this with root privileges"
+  echo "[+] Type this: 'wsl.exe -u root --exec ./WSL2Setup-Kali'"
+  echo ""
+  exit
+fi
+
+apt-get clean
+tput clear reset
+
+## Fixing Bad Keyring Error
+echo ""
+echo ""
+echo "[+] Fixing Keyring Errors"
+wget -q --no-check-certificate https://http.kali.org/kali/pool/main/k/kali-archive-keyring/kali-archive-keyring_2022.1_all.deb
+apt-get install -y ./kali-archive-keyring_2022.1_all.deb
+apt-get update
+rm -rf kali-archive-keyring_2022.1_all.deb
+
+# Somewhat important if we want to include upgrade
+echo ""
+echo ""
+echo "[+] Fixing Upgrade Errors"
+sed -i "s/set -e/# set -e/" /var/lib/dpkg/info/libc6\:amd64.postinst
+
+# Updating the System
+echo ""
+echo ""
+echo "[+] Attempting System Update..."
+apt-get clean
+apt-get autoclean
+apt-get remove
+apt-get autoremove
+apt-get update
+apt-get upgrade -y
+
+# Updating the System
+echo ""
+echo ""
+echo "[+] Attempting System Update..."
+apt-get clean
+apt-get autoclean
+apt-get remove
+apt-get autoremove
+apt-get update
+apt-get upgrade -y
+apt-get install build-essential -y || mv -f /var/lib/dpkg/info /var/lib/dpkg/info_old && mkdir /var/lib/dpkg/info && apt-get update && apt-get -f install && mv -f /var/lib/dpkg/info/* /var/lib/dpkg/info_old && rm -rf /var/lib/dpkg/info && mv -f /var/lib/dpkg/info_old /var/lib/dpkg/info
+
+# Updating the System
+echo ""
+echo ""
+echo "[+] Attempting System Update..."
+apt-get clean
+apt-get autoclean
+apt-get remove
+apt-get autoremove
+apt-get update
+apt-get upgrade -y
+apt-get install build-essential -y || mv -f /var/lib/dpkg/info /var/lib/dpkg/info_old && mkdir /var/lib/dpkg/info && apt-get update && apt-get -f install && mv -f /var/lib/dpkg/info/* /var/lib/dpkg/info_old && rm -rf /var/lib/dpkg/info && mv -f /var/lib/dpkg/info_old /var/lib/dpkg/info
+
+# Updating the System
+echo ""
+echo ""
+echo "[+] Finally Updating System"
+apt-get clean
+apt-get autoclean
+apt-get remove
+apt-get autoremove
+apt-get update
+apt-get upgrade -y
+apt-get dist-upgrade -y
+apt-get install build-essential -y
+
+# Adjusting Permissions
+echo ""
+echo ""
+echo "[+] Fixing Permission Errors"
+setcap cap_net_raw+ep /usr/bin/ping
+chown -R user:user /dev/kvm
+
+# Installing USB support in WSL2
+echo ""
+echo ""
+echo "[+] Fixing USB Support"
+apt-get install -y usbutils usbip
+
+# Installing Kali GUI
+echo ""
+echo ""
+echo "[+] Installing Kali Desktop - XFCE Edition"
+echo ""
+apt-get install -y kali-desktop-xfce kali-win-kex
+
+# Updating the System
+echo ""
+echo ""
+echo "[+] Updating System"
+apt-get clean
+apt-get autoclean
+apt-get remove
+apt-get autoremove
+apt-get update
+apt-get upgrade -y
+apt-get dist-upgrade -y
+apt-get install build-essential -y
+
+echo ""
+echo ""
+echo "[+] Finished"
+echo ""

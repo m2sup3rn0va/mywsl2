@@ -1,0 +1,287 @@
+" ============================================================================
+" VIMRC File
+" Created By: Mr. Sup3rN0va
+" Includes:
+"	- Python Syntax Highlighting and Identations
+" 	- Python Autocompletion
+"	- Icons
+"	- Markdown
+"	- NerdTree - File Browser
+" ============================================================================
+
+set encoding=utf-8
+
+" ============================================================================
+" Installing Dependencies
+" ============================================================================
+" Manual Installation after installing all the dependencies (If Needed):
+" mkdir $HOME/.vim
+" git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
+" REMOVED NODE AND NPM FROM APT_GET INSTALL WHEN USED WITH SiAAA - ALREADY INSTALLED
+
+let vundle_path = expand('~/.vim/bundle/Vundle.vim')
+let plugin_install_status = 0
+
+if !isdirectory(vundle_path)
+        echo "Installing all the dependencies"
+        silent !sudo apt-get clean 2>&1 > /dev/null;
+        silent !sudo apt-get autoclean 2>&1 > /dev/null;
+        silent !sudo apt-get remove -y 2>&1 > /dev/null;
+        silent !sudo apt-get autoremove -y 2>&1 > /dev/null;
+        silent !sudo apt-get update --fix-missing 2>&1 | xargs -I{} -d$'\n' echo -e "\e[1;34m[I] {}\e[m"
+        echo ""
+        silent !sudo apt-get install -y curl vim exuberant-ctags git ack-grep build-essential cmake vim python3-dev python3-pip xdg-utils curl vim-youcompleteme 2>&1 | xargs -I{} -d$'\n' echo -e "\e[1;34m[I] {}\e[m"
+        silent !python3 -m pip install --upgrade pip
+        silent !sudo python3 -m pip install --upgrade pep8 flake8 pyflakes isort yapf --user --no-warn-script-location 2>&1 | xargs -I{} -d$'\n' echo -e "\e[1;34m[I] {}\e[m"
+        echo ""
+        echo "Installing VIM Plugin Manager"
+        echo ""
+        silent !git clone --progress https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
+
+        let plugin_install_status = 1
+endif
+
+set rtp+=~/.vim/bundle/Vundle.vim
+
+" ============================================================================
+" Calling Vundle to install Plugins
+" ============================================================================
+
+call vundle#begin()
+
+" Let Vundle manage Vundle, required
+
+Plugin 'VundleVim/Vundle.vim'
+
+"--------------------------------------------------
+
+" VIM Airlines Theme
+" Just add these lines in vimrc and :PluginInstall
+
+Plugin 'vim-airline/vim-airline'
+Plugin 'vim-airline/vim-airline-themes'
+
+"--------------------------------------------------
+
+" YouCompleteMe - Autocompletion
+" Manual Installation (If Needed):
+" sudo apt install build-essential cmake vim python3-dev
+" Run :PluginInstall to get the folder - YouCompleteMe
+" cd .vim/bundle/YouCompleteMe
+" ./install.py --clang-completer
+
+Plugin 'ycm-core/YouCompleteMe'
+
+set completeopt-=preview
+
+"--------------------------------------------------
+
+" Markdown 
+" Manual Installation (If Needed):
+" sudo apt install npm xdg-utils curl nodejs -y
+" cd $HOME/.vim
+" mkdir -p after/ftplugin/markdown
+" Copy 'after/ftplugin/markdown/instant-markdown.vim' from github to above folder
+" Above copy step only required when not using any Plugin Manager
+" sudo npm -g install instant-markdown-d
+
+Plugin 'suan/vim-instant-markdown', {'rtp': 'after'}
+filetype plugin on
+
+let g:instant_markdown_slow = 0
+let g:instant_markdown_autostart = 0 
+let g:instant_markdown_open_to_the_world = 0
+
+" Uncomment to override defaults:
+" let g:instant_markdown_slow = 1
+" let g:instant_markdown_autostart = 0
+" let g:instant_markdown_open_to_the_world = 1
+" let g:instant_markdown_allow_unsafe_content = 1
+" let g:instant_markdown_allow_external_content = 0
+" let g:instant_markdown_mathjax = 1
+" let g:instant_markdown_logfile = '/tmp/instant_markdown.log'
+" let g:instant_markdown_autoscroll = 0
+" let g:instant_markdown_port = 8888
+" let g:instant_markdown_python = 1
+
+"-------------------------------------------------
+
+" Nerd Commenter
+Plugin 'preservim/nerdcommenter'
+
+"-------------------------------------------------
+
+" Nerd Tree - File Browser
+Plugin 'preservim/nerdtree'
+
+let g:NERDTreeDirArrowExpandable = '▸'
+let g:NERDTreeDirArrowCollapsible = '▾'
+
+"-------------------------------------------------
+
+" Tagbar - CTags window
+Plugin 'majutsushi/tagbar'
+
+"-------------------------------------------------
+
+" Monokai Theme
+Plugin 'patstockwell/vim-monokai-tasty'
+
+"-------------------------------------------------
+
+" AutoClose
+Plugin 'Townk/vim-autoclose'
+
+"-------------------------------------------------
+
+" Python Indentation
+Plugin 'vim-scripts/indentpython.vim'
+
+"-------------------------------------------------
+
+" Devicons
+Plugin 'ryanoasis/vim-devicons'
+
+"-------------------------------------------------
+
+" Better language packs
+Plugin 'sheerun/vim-polyglot'
+
+"-------------------------------------------------
+
+call vundle#end()            " required
+filetype plugin indent on    " required
+
+" Brief help
+" :PluginList       - lists configured plugins
+" :PluginInstall    - installs plugins; append `!` to update or just :PluginUpdate
+" :PluginSearch foo - searches for foo; append `!` to refresh local cache
+" :PluginClean      - confirms removal of unused plugins; append `!` to auto-approve removal
+
+" ============================================================================
+" Installing Plugin Dependencies
+" ============================================================================
+
+if plugin_install_status
+	:execute 'PluginInstall'
+	:execute 'BundleInstall'
+
+	echo ""
+	echo "Initiating YouCompleteMe VIM Plugin"
+	echo ""
+	silent !python3 ~/.vim/bundle/YouCompleteMe/install.py --clang-completer
+	echo ""
+
+	echo "Initiating Markdown VIM Plugin"
+	silent !sudo npm -g install instant-markdown-d
+	echo ""
+
+	:execute 'qa!'
+endif
+
+" ============================================================================
+" VIM General Settings
+" ============================================================================
+
+" ==== Color Scheme ==== 
+" Font can be set from Terminal Settings
+colorscheme vim-monokai-tasty
+
+" ==== Partial Autocompletion of File Names ====
+set path+=**
+syntax on
+set wildmenu " Tab Completion on command mode
+
+" ==== Spell Checker ====
+set spelllang=en_us
+set spell
+
+" ==== Tab ====
+set shiftwidth=4
+set tabstop=4
+set softtabstop=4
+set expandtab
+set smartindent
+
+" ==== Search Highlighting ====
+set hls is
+
+" ==== No Error Bells ====
+set noerrorbells
+set noswapfile
+
+" ==== Lines ====
+set nu
+set wrap
+set relativenumber
+
+" ==== Auto-reload vimrc ====
+autocmd! bufwritepost .vimrc source %
+
+" Set SHELL
+" Sometimes ZSH has issues
+set shell=/bin/bash
+
+" ================================================
+" Remapping Keys"
+" ================================================
+let mapleader = ","
+
+" ===== Better Indentation without loosing selection ====
+vnoremap > >gv
+vnoremap < <gv
+
+" ==== Disable Arrow Keys ====
+noremap <Up> <Nop>
+noremap <Left> <Nop>
+noremap <Right> <Nop>
+noremap <Down> <Nop>
+
+" ==== Saving the files ====
+imap <ESC>s <ESC>:w!<CR>a
+
+" ==== Insert Images and Links ====
+imap <ESC>i ![]()<ESC>ha
+imap <ESC>l []()<ESC>ha
+
+" ==== Get File Path ====
+imap <C-f> <C-x><C-f>
+
+" ==== Bold and Italics ====
+map <C-b> a****<ESC>hha
+map <C-b>w bi**<ESC>ea**
+map <C-i> a__<ESC>ha
+map <C-i>w bi_<ESC>ea_
+
+" ==== Nerd Tree ====
+map <F3> :NERDTreeToggle<CR>
+
+" Enable folder icons
+let g:WebDevIconsUnicodeDecorateFolderNodes = 1
+let g:DevIconsEnableFoldersOpenClose = 1
+
+"---------------------------------
+
+" ==== Set PDB Breakpoints ====
+" Ability to add python breakpoints
+" (I use ipdb, but you can change it to whatever tool you use for debugging)
+au FileType python map <silent> <leader>b Oimport pdb; pdb.set_trace()<esc>
+
+"---------------------------------
+
+" ==== TagBar ====
+map <F4> :TagbarToggle<CR>
+
+" ==== Close All ====
+map <ESC>wq :wqa!<CR>
+map <ESC>q :qa!<CR>
+
+"---------------------------------
+
+" ==== Text Color ====
+imap <C-f>r <span style="color:red">****</span><ESC>9ha<CR>
+imap <C-f>b <span style="color:blue">****</span><ESC>9ha<CR>
+imap <C-f>g <span style="color:green">****</span><ESC>9ha<CR>
+
+let g:AutoClosePreserveDotReg = 0
+

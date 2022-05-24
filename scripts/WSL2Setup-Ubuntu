@@ -1,0 +1,57 @@
+#! /bin/bash
+
+sudo apt-get clean
+tput clear reset
+
+# Updating the System
+sudo apt-get clean
+sudo apt-get autoclean
+sudo apt-get remove
+sudo apt-get autoremove
+sudo apt-get update
+sudo apt-get upgrade -y
+sudo apt-get dist-upgrade -y
+sudo apt-get install build-essential -y
+
+# Updating the System
+sudo apt-get clean
+sudo apt-get autoclean
+sudo apt-get remove
+sudo apt-get autoremove
+sudo apt-get update
+sudo apt-get upgrade -y
+sudo apt-get dist-upgrade -y
+sudo apt-get install build-essential -y
+
+# Adjusting Permissions
+sudo chown -R user:user /dev/kvm
+
+# Installing USB support in WSL2
+sudo apt-get install -y usbutils hwdata linux-tools-5.13.0-39-generic
+sudo apt-get update
+sudo update-alternatives --install /usr/local/bin/usbip usbip /usr/lib/linux-tools/5.13.0-39-generic/usbip 20
+
+# Installing Ubuntu GUI
+sudo apt-get install -y xfce4 xfce4-terminal xfce4-goodies
+sudo apt install -y xrdp
+sudo cp /etc/xrdp/xrdp.ini /etc/xrdp/xrdp.ini.bak
+sudo sed -i 's/3389/3390/g' /etc/xrdp/xrdp.ini
+sudo sed -i 's/max_bpp=32/#max_bpp=32\nmax_bpp=128/g' /etc/xrdp/xrdp.ini
+sudo sed -i 's/xserverbpp=24/#xserverbpp=24\nxserverbpp=128/g' /etc/xrdp/xrdp.ini
+sudo systemctl enable dbus
+sudo /etc/init.d/dbus start
+echo xfce4-session > ~/.xsession
+sudo sed -i 's/test -x/# text -x/' /etc/xrdp/startwm.sh
+sudo sed -i 's/exec \/bin\/sh/# exec \/bin\/sh/' /etc/xrdp/startwm.sh
+echo -e "\nstartxfce4" | sudo tee -a /etc/xrdp/startwm.sh
+sudo /etc/init.d/xrdp start
+
+# Updating the System
+sudo apt-get clean
+sudo apt-get autoclean
+sudo apt-get remove
+sudo apt-get autoremove
+sudo apt-get update
+sudo apt-get upgrade -y
+sudo apt-get dist-upgrade -y
+sudo apt-get install build-essential -y

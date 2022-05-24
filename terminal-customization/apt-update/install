@@ -1,0 +1,24 @@
+#! /bin/bash
+
+# Installing APT-UPDATE
+
+partition()
+{
+        python3 -c "from rich.console import Console; console = Console(); console.rule('[+] $@ [+]');" | lolcat
+}
+
+color_output()
+{
+	$@ 2>&1 | xargs -L1 -d$'\n' echo -e "\e[1m[I]\e[0m" | lolcat;
+}
+
+if [ ! -f $HOME/.local/bin/apt-update ];
+then
+	partition "INSTALLING APT-UPDATE"
+	echo ""
+	cp -f apt-update/apt-update $HOME/.local/bin 2> /dev/null
+	chmod +x $HOME/.local/bin/apt-update
+	color_output echo "[+] APT-UPDATE Installed [+]"
+	echo ""
+	partition "FINISHED"
+fi
