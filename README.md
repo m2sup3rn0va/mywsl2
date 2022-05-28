@@ -62,3 +62,15 @@
 
 ---
 
+## **Reference**
+
+---
+
+- Port Forwarding script is taken from : [**Hray - Using Burpsuite with WSL2**](https://hray.co.uk/2021/02/10/using-burpsuite-with-wsl2/)
+
+---
+
+<div class='page'/>
+☝️ <a href="#">Back to top</a> ☝️
+
+---
